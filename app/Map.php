@@ -143,7 +143,7 @@ class Map
 
         $thresholds = array_map(function ($move) use ($map) {
             $map[$move[0]][$move[1]] = 0;
-            return $this->explore($map, $move[0], $move[1], $this->snake['length']);
+            return $this->explore($map, $move[0], $move[1], min($this->snake['length'], 12));
         }, $moves);
 
         foreach ($thresholds as $key => $threshold) {
