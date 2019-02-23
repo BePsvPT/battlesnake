@@ -76,7 +76,7 @@ class Map
         if (!empty($safe = array_diff_key($moves, $this->getDangerMoves($moves)))) {
             $danger = array_intersect_key($moves, $this->getDangerMoves($moves));
 
-            if (array_first($safe)[2] > 5 && !empty($danger)) {
+            if (array_first($safe)[2] > 7 && !empty($danger)) {
                 return $danger;
             }
 
@@ -143,7 +143,7 @@ class Map
 
         $thresholds = array_map(function ($move) use ($map) {
             $map[$move[0]][$move[1]] = 0;
-            return $this->dfsExplore($map, $move[0], $move[1], 10);
+            return $this->explore($map, $move[0], $move[1], $this->snake['length']);
         }, $moves);
 
         foreach ($thresholds as $key => $threshold) {
@@ -169,51 +169,31 @@ class Map
      *
      * @todo optimize this
      */
-    protected function dfsExplore($map, $x, $y, $threshold)
+    protected function explore($map, $x, $y, $threshold)
     {
         if ($threshold === 0) {
             return $threshold;
         }
 
         $next = [
-            'up' => [
-                'val' => &$map[$x][$y - 1],
-                'x' => $x,
-                'y' => $y - 1,
-            ],
-            'right' => [
-                'val' => &$map[$x + 1][$y],
-                'x' => $x + 1,
-                'y' => $y,
-            ],
-            'down' => [
-                'val' => &$map[$x][$y + 1],
-                'x' => $x,
-                'y' => $y + 1,
-            ],
-            'left' => [
-                'val' => &$map[$x - 1][$y],
-                'x' => $x - 1,
-                'y' => $y,
-            ],
+            ['x' => $x, 'y' => $y - 1],
+            ['x' => $x + 1, 'y' => $y],
+            ['x' => $x, 'y' => $y + 1],
+            ['x' => $x - 1, 'y' => $y],
         ];
 
-        $keys = array_keys($next);
+        shuffle($next);
 
-        shuffle($keys);
+        $thresholds = [$threshold];
 
-        foreach($keys as $key) {
-            $positions[$key] = $next[$key];
-        }
-
-        foreach ($positions as $direction => $position) {
-            if ($position['val'] === 1) {
-                $position['val'] = 0;
-                return $this->dfsExplore($map, $position['x'], $position['y'], $threshold - 1);
+        foreach ($next as $pos) {
+            if ($map[$pos['x']][$pos['y']] === 1) {
+                $map[$pos['x']][$pos['y']] = 0;
+                $thresholds[] = $this->explore($map, $pos['x'], $pos['y'], $threshold - 1);
             }
         }
 
-        return $threshold;
+        return min($thresholds);
     }
 
     /**
