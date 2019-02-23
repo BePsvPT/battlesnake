@@ -340,7 +340,7 @@ class Map
         foreach ($positions as $position) {
             list($m, $n) = $position;
 
-            if (in_array($this->getMapContent($m, $n, true), ['space', 'food'], true)) {
+            if (in_array($this->getMapContent($m, $n, true), ['space', 'food', 'tail'], true)) {
                 $this->setMapContent($m, $n, 'danger');
 
                 $max = 0;
