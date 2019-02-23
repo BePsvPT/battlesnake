@@ -74,6 +74,12 @@ class Map
         $moves = $this->calcThresholds($moves);
 
         if (!empty($safe = array_diff_key($moves, $this->getDangerMoves($moves)))) {
+            $danger = array_intersect_key($moves, $this->getDangerMoves($moves));
+
+            if (array_first($safe)[2] > 5 && !empty($danger)) {
+                return $danger;
+            }
+
             if ($this->snake['health'] < 50) {
                 $result = $this->getFoodMoves($safe);
 
