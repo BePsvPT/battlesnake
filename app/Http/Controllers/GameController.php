@@ -81,7 +81,13 @@ class GameController extends Controller
         if (empty($moves)) {
             $move = 'dead';
         } else {
-            $move = array_first(array_keys($moves));
+            $min = array_first($moves)[2];
+
+            while (array_last($moves)[2] > $min) {
+                array_pop($moves);
+            }
+
+            $move = array_rand($moves);
         }
 
         $directory = storage_path('games/'.$data['game']['id']);
