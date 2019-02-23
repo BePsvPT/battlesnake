@@ -54,8 +54,6 @@ class GameController extends Controller
      */
     public function move(Request $request)
     {
-        $map = new Map(11);
-
         $content = $request->getContent();
 
         $data = json_decode($content, true);
@@ -65,6 +63,8 @@ class GameController extends Controller
         }
 
         $id = $data['you']['id'];
+
+        $map = new Map($data['board']['width']);
 
         $map->setHealth($data['you']['health']);
 
