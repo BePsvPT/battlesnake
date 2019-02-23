@@ -82,6 +82,12 @@ class Map
                 }
             }
 
+            if (array_first($safe)[2] > 5) {
+                if (!empty($tail = $this->getTailMoves($safe))) {
+                    return $tail;
+                }
+            }
+
             return $safe;
         }
 
