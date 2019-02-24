@@ -80,7 +80,7 @@ class Map
                 return $danger;
             }
 
-            if ($this->snake['health'] < 50) {
+            if ($this->snake['health'] < 90) {
                 $result = $this->getFoodMoves($safe);
 
                 if (!empty($result)) {
@@ -141,13 +141,10 @@ class Map
             }, $row);
         }, $this->data);
 
-        $thresholds = array_map(function ($move) use ($map) {
-            $map[$move[0]][$move[1]] = 0;
-            return $this->explore($map, $move[0], $move[1], min($this->snake['length'], 12));
-        }, $moves);
-
-        foreach ($thresholds as $key => $threshold) {
-            $moves[$key][] = $threshold;
+        foreach ($moves as $direction => $move) {
+            $nmap = $map;
+            $nmap[$move[0]][$move[1]] = 0;
+            $moves[$direction][] = $this->explore($nmap, $move[0], $move[1], min($this->snake['length'], 11));
         }
 
         uasort($moves, function ($a, $b) {
