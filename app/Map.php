@@ -76,21 +76,23 @@ class Map
         if (!empty($safe = array_diff_key($moves, $this->getDangerMoves($moves)))) {
             $danger = array_intersect_key($moves, $this->getDangerMoves($moves));
 
-            if (array_first($safe)[2] > 7 && !empty($danger)) {
+            $threshold = array_first($safe)[2];
+
+            if ($threshold > 7 && !empty($danger)) {
                 return $danger;
             }
 
-            if ($this->snake['health'] < 90) {
+            if ($threshold > 5) {
+                if (!empty($tail = $this->getTailMoves($safe))) {
+                    return $tail;
+                }
+            }
+
+            if ($threshold > 5 && $this->snake['health'] < 95) {
                 $result = $this->getFoodMoves($safe);
 
                 if (!empty($result)) {
                     return $result;
-                }
-            }
-
-            if (array_first($safe)[2] > 5) {
-                if (!empty($tail = $this->getTailMoves($safe))) {
-                    return $tail;
                 }
             }
 
